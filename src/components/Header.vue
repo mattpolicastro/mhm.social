@@ -10,7 +10,7 @@ export default {
   name: 'Header'
   , data() {
     return {
-      tagline: 'an asocial network'
+      tagline: 'an asocial (not/net)work'
     }
   }
   , mounted() {

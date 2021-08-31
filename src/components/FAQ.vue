@@ -1,9 +1,15 @@
 <template>
   <div>
-    <a><h2 @click="toggleFAQ">hm?</h2></a>
+    <h2 @click="toggleFAQ">huh? {{showFAQ ? '▼' : '◀︎'}}</h2>
     <div v-if="showFAQ">
       <h3>what is this?</h3>
-      <p>sometimes you just need to post something, but maybe nobody needs to see it.</p>
+      <p>sometimes you just need to get something off your chest, but figuring out how to say it is too hard.</p>
+      <h3>what does that mean?</h3>
+      <p>this is the asocial answer to twitter. it's a box where you can post things, but nobody can ever see them.</p>
+      <p>(it does save your posts to a bucket on your computer, but this app will never send them anywhere, ever.)</p>
+      <h3>why did you make this?</h3>
+      <p>i keep finding myself wanting to tweet things then freeze up at the prospect of how people will read it, if i should try to be funny, etc.</p>  
+      <p>mhm gives me some acknowledgement and lets me carry on with my day.</p>
     </div>
   </div>
 </template>
@@ -39,6 +45,6 @@ li {
   margin: 0 10px;
 }
 a {
-  color: #42b983;
+  border-left-width: 0px;
 }
 </style>

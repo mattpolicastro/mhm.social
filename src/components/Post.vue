@@ -1,32 +1,32 @@
 <template>
-    <div>
-        <textarea 
-            v-model="mhmContent" 
-            v-bind:maxlength="config.lengthLimit" 
-            @keyup.ctrl.enter="postMhm"
-            placeholder="post here"
-        />
-        <i>Using {{mhmLength}}/{{config.lengthLimit}}</i>
-        <button v-on:click="postMhm">mhm.</button>
-        <FAQ />
-        <div v-if="mhmHistory.length > 0">
-            <div v-for="mhm in mhmHistory" :key="mhm.timestamp">
-                <p>{{mhm.content}}</p><i>{{timestampHelper(mhm.timestamp)}} ago</i>
-            </div>
-            <button v-on:click="clearHistory">clear history</button>
+    <textarea 
+        v-model="mhmContent" 
+        v-bind:maxlength="config.lengthLimit" 
+        @keyup.ctrl.enter="postMhm"
+        placeholder="what's on your mind?"
+    />
+    <div class="post-controls">
+        <i>{{mhmLength}}/{{config.lengthLimit}} characters</i>
+        <span class="button" @click="postMhm">mhm.</span>
+    </div>
+    <div v-if="mhmHistory.length > 0">
+        <h2 @click="toggleHistory">history {{showHistory ?  '▼' : '◀︎'}}</h2>
+        <div v-if="showHistory" class="post-history">
+            <i>these posts aren't stored anywhere other than your device.</i>
+            <ul >
+                <li v-for="mhm in mhmHistory" :key="mhm.timestamp">
+                    <p>{{mhm.content}}</p><i>{{timestampHelper(mhm.timestamp)}} ago</i>
+                </li>
+            </ul>
+            <span class="button" v-on:click="deleteHistory">delete history</span>
         </div>
     </div>
 </template>
 
 
 <script>
-import FAQ from './FAQ.vue'
-
 export default {
     name: 'Mhm'
-    , components: {
-        FAQ
-    }
     , data() {
         return {
             config: {
@@ -36,6 +36,7 @@ export default {
             , mhmContent: ''
             , mhmSounds: []
             , mhmHistory: []
+            , showHistory: true
         }
     }
     , computed: {
@@ -49,18 +50,20 @@ export default {
         
         // Perform one-time check for mhm history in LS
         const rawLsMhmHistory = window.localStorage.getItem('mhmHistory')
-        if (rawLsMhmHistory) {
+        // if (rawLsMhmHistory) {
+            console.log('mounting history')
             const lsMhmHistory = JSON.parse(rawLsMhmHistory)
+            // console.log(lsMhmHistory)
             if (Array.isArray(lsMhmHistory)) {
                 this.mhmHistory = lsMhmHistory
             }
-        }
+        // }
 
         // 
         this.syncHistory()
     }
     , methods: {
-        clearHistory() {
+        deleteHistory() {
             this.mhmHistory = []
             this.syncHistory()
         }
@@ -82,6 +85,7 @@ export default {
                     , timestamp: Date.now()
                 }
                 this.mhmHistory.unshift(currentMhm)
+                this.syncHistory()
                 this.playSound()
                 this.mhmContent = ''
             }
@@ -97,16 +101,56 @@ export default {
         }
         , syncHistory() {
             // Force sort of history just to be safe
-            this.mhmHistory = this.mhmHistory.sort((a, b) => (a.timestamp < b.timestamp) ? 1 : -1)
+            const sortedHistory = this.mhmHistory.sort((a, b) => (a.timestamp < b.timestamp) ? 1 : -1)
+
+            this.mhmHistory = sortedHistory
 
             // Write current history to LS
             window.localStorage.setItem(this.config.localStorageKey, JSON.stringify(this.mhmHistory))
         }
-    }
-    , watch: {
-        mhmHistory() {
-            this.syncHistory()
+        , toggleHistory() {
+            this.showHistory = !this.showHistory
         }
     }
+    // , watch: {
+    //     mhmHistory(newHistory, oldHistory) {
+    //         console.log(newHistory, oldHistory)
+    //         this.syncHistory()
+    //     }
+    // }
 }
 </script>
+
+<style scoped>
+.post-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1em;
+}
+.post-history {
+    margin-top: 0em;
+}
+li {
+    margin: 3em auto;
+    border-left: 0.5em solid rgb(3, 117, 121);
+    padding-right: 0.5em;
+}
+li > i {
+    font-size: 0.9em;
+}
+button {
+    padding: 0.5em;
+}
+textarea {
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 1.3em;
+    display: block;
+    width: 100%;
+    height: 7em;
+    box-sizing: border-box;
+    resize: none;
+    padding: 0.5em;
+}
+</style>
