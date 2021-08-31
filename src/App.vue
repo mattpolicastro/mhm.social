@@ -31,7 +31,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  max-width: 20em;
+  max-width: 22em;
 }
 h1, h2, h3, h4, h5, h6 {
   font-weight: 900;
@@ -42,6 +42,9 @@ div {
 ul {
   list-style-type: none;
   padding: 0;
+}
+a {
+  color: #42b983;
 }
 .button {
   font-weight: 900;

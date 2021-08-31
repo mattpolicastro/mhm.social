@@ -10,6 +10,11 @@
       <h3>why did you make this?</h3>
       <p>i keep finding myself wanting to tweet things then freeze up at the prospect of how people will read it, if i should try to be funny, etc.</p>  
       <p>mhm gives me some acknowledgement and lets me carry on with my day.</p>
+      <h3>privacy?</h3>
+      <p>seriously, there is nothing in this app that is designed to send your posts elsewhere. the post history is stored on your device using <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">localStorage</a>. if the post history is a deal-killer, just let me know on twitter or github.</p>
+      <p>i did add google analytics because i'm curious if anyone will touch this, but seriously, that's it.</p>
+      <h3>what's this app made of?</h3>
+      <p><a href="https://v3.vuejs.org/">vue.js</a>, mostly. it's a nice framework and i learned it before React's licensing got better. (or less worse depending on who you ask.)</p>
     </div>
   </div>
 </template>
