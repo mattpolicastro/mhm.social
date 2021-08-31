@@ -47,7 +47,7 @@ ul {
   padding: 0;
 }
 a {
-  color: #42b983;
+  color: rgb(3, 117, 121);
 }
 .button {
   font-weight: 900;
