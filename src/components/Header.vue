@@ -18,6 +18,7 @@ export default {
 
     if (randomTagline < 0.05) {this.tagline = 'just post through it'}
     if (randomTagline < 0.10) {this.tagline = 'release your drafts, embrace the void'}
+    if (randomTagline < 0.10) {this.tagline = 'an overwrought .plan file'}
   }
 }
 </script>
