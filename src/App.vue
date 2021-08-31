@@ -33,6 +33,9 @@ export default {
   color: #2c3e50;
   max-width: 22em;
 }
+h1 {
+  color: rgb(3, 117, 121);
+}
 h1, h2, h3, h4, h5, h6 {
   font-weight: 900;
 }
