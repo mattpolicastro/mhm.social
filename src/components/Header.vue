@@ -15,10 +15,10 @@ export default {
   }
   , mounted() {
     const randomTagline = Math.random()
-
-    if (randomTagline < 0.05) {this.tagline = 'just post through it'}
-    if (randomTagline < 0.10) {this.tagline = 'release your drafts, embrace the void'}
-    if (randomTagline < 0.10) {this.tagline = 'an overwrought .plan file'}
+    
+    if (randomTagline < 0.1) {this.tagline = 'just post through it'}
+    else if (randomTagline < 0.2) {this.tagline = 'release your drafts, embrace the void'}
+    else if (randomTagline < 0.4) {this.tagline = 'an overwrought .plan file'}
   }
 }
 </script>
