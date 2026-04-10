@@ -8,7 +8,7 @@
       <p>this is the asocial answer to twitter. it's a box where you can post things, but nobody can ever see them.</p>
       <p>(it does save your posts to a bucket on your computer, but this app will never send them anywhere, ever.)</p>
       <h3>why did you make this?</h3>
-      <p>i keep finding myself wanting to tweet things then freeze up at the prospect of how people will read it, if i should try to be funny, etc.</p>  
+      <p>i keep finding myself wanting to tweet things then freeze up at the prospect of how people will read it, if i should try to be funny, etc.</p>
       <p>mhm gives me some acknowledgement and lets me carry on with my day.</p>
       <h3>can i contribute?</h3>
       <p>i'd get a real kick out of more people adding their voices to this thing.</p>
@@ -22,19 +22,13 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'FAQ'
-  , data() {
-    return {
-      showFAQ: false
-    }
-  }
-  , methods: {
-    toggleFAQ() {
-      this.showFAQ = !this.showFAQ
-    }
-  }
+<script setup>
+import { ref } from 'vue'
+
+const showFAQ = ref(false)
+
+function toggleFAQ() {
+  showFAQ.value = !showFAQ.value
 }
 </script>
 
