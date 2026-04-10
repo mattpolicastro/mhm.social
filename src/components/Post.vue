@@ -1,7 +1,7 @@
 <template>
-    <textarea 
-        v-model="mhmContent" 
-        v-bind:maxlength="config.lengthLimit" 
+    <textarea
+        v-model="mhmContent"
+        v-bind:maxlength="config.lengthLimit"
         @keyup.ctrl.enter="postMhm"
         placeholder="what's on your mind?"
     />
@@ -24,100 +24,83 @@
 </template>
 
 
-<script>
-export default {
-    name: 'Mhm'
-    , data() {
-        return {
-            config: {
-                lengthLimit: 140
-                , localStorageKey: 'mhmHistory'
-            }
-            , mhmContent: ''
-            , mhmSounds: []
-            , mhmHistory: []
-            , showHistory: true
-        }
-    }
-    , computed: {
-        mhmLength() {
-            return(this.mhmContent.length)
-        }
-    }
-    , mounted() {
-        // The `importSounds` workaround for sound file loading inspired by: https://stackoverflow.com/questions/54095215/how-to-get-all-the-image-files-in-a-directory-using-vue-js-nuxt-js
-        this.importSounds(require.context('../assets/sounds', true, /\.mp3$/))
-        
-        // Perform one-time check for mhm history in LS
-        const rawLsMhmHistory = window.localStorage.getItem('mhmHistory')
-        // if (rawLsMhmHistory) {
-            console.log('mounting history')
-            const lsMhmHistory = JSON.parse(rawLsMhmHistory)
-            // console.log(lsMhmHistory)
-            if (Array.isArray(lsMhmHistory)) {
-                this.mhmHistory = lsMhmHistory
-            }
-        // }
+<script setup>
+import { ref, computed, onMounted } from 'vue'
 
-        // 
-        this.syncHistory()
+const config = {
+    lengthLimit: 140,
+    localStorageKey: 'mhmHistory'
+}
+
+const mhmContent = ref('')
+const mhmSounds = ref([])
+const mhmHistory = ref([])
+const showHistory = ref(true)
+
+const mhmLength = computed(() => mhmContent.value.length)
+
+// Eagerly glob all mp3s in ../assets/sounds and store their URLs
+const soundModules = import.meta.glob('../assets/sounds/*.mp3', { query: '?url', import: 'default', eager: true })
+mhmSounds.value = Object.values(soundModules).map(path => ({ path }))
+
+onMounted(() => {
+    // Perform one-time check for mhm history in LS
+    const rawLsMhmHistory = window.localStorage.getItem('mhmHistory')
+    console.log('mounting history')
+    const lsMhmHistory = JSON.parse(rawLsMhmHistory)
+    if (Array.isArray(lsMhmHistory)) {
+        mhmHistory.value = lsMhmHistory
     }
-    , methods: {
-        deleteHistory() {
-            this.mhmHistory = []
-            this.syncHistory()
-        }
-        , importSounds(r) {
-            r.keys().forEach(key => {
-                this.mhmSounds.push({path: r(key)})
-            })
-        }
-        , playSound() {
-            const randomMhm = this.mhmSounds[Math.floor(Math.random() * this.mhmSounds.length)]
-            new Audio(randomMhm.path).play()
-        }
-        , postMhm() {
-            if (this.mhmContent === '') {
-                return
-            } else {
-                const currentMhm = {
-                    content: this.mhmContent
-                    , timestamp: Date.now()
-                }
-                this.mhmHistory.unshift(currentMhm)
-                this.syncHistory()
-                this.playSound()
-                this.mhmContent = ''
-            }
-        }
-        , timestampHelper(timestamp) {
-            const timestampDelta = (Date.now() - timestamp)
 
-            if (timestampDelta < 6e+4) {return `${Math.floor(timestampDelta / 1e+3)} seconds`} else
-            if (timestampDelta < 3.6e+6) {return `${Math.floor(timestampDelta / 6e+4)} minutes`} else
-            if (timestampDelta < 8.64e+7) {return `${Math.floor(timestampDelta / 3.6e+6)} hours`} else
-            return `${Math.floor(timestampDelta / 8.64e+7)} days`
-            
-        }
-        , syncHistory() {
-            // Force sort of history just to be safe
-            const sortedHistory = this.mhmHistory.sort((a, b) => (a.timestamp < b.timestamp) ? 1 : -1)
+    syncHistory()
+})
 
-            this.mhmHistory = sortedHistory
+function deleteHistory() {
+    mhmHistory.value = []
+    syncHistory()
+}
 
-            // Write current history to LS
-            window.localStorage.setItem(this.config.localStorageKey, JSON.stringify(this.mhmHistory))
+function playSound() {
+    const randomMhm = mhmSounds.value[Math.floor(Math.random() * mhmSounds.value.length)]
+    new Audio(randomMhm.path).play()
+}
+
+function postMhm() {
+    if (mhmContent.value === '') {
+        return
+    } else {
+        const currentMhm = {
+            content: mhmContent.value,
+            timestamp: Date.now()
         }
-        , toggleHistory() {
-            this.showHistory = !this.showHistory
-        }
+        mhmHistory.value.unshift(currentMhm)
+        syncHistory()
+        playSound()
+        mhmContent.value = ''
     }
-    // , watch: {
-    //     mhmHistory(newHistory, oldHistory) {
-    //         console.log(newHistory, oldHistory)
-    //         this.syncHistory()
-    //     }
-    // }
+}
+
+function timestampHelper(timestamp) {
+    const timestampDelta = (Date.now() - timestamp)
+
+    if (timestampDelta < 6e+4) { return `${Math.floor(timestampDelta / 1e+3)} seconds` } else
+    if (timestampDelta < 3.6e+6) { return `${Math.floor(timestampDelta / 6e+4)} minutes` } else
+    if (timestampDelta < 8.64e+7) { return `${Math.floor(timestampDelta / 3.6e+6)} hours` } else
+    return `${Math.floor(timestampDelta / 8.64e+7)} days`
+}
+
+function syncHistory() {
+    // Force sort of history just to be safe
+    const sortedHistory = mhmHistory.value.sort((a, b) => (a.timestamp < b.timestamp) ? 1 : -1)
+
+    mhmHistory.value = sortedHistory
+
+    // Write current history to LS
+    window.localStorage.setItem(config.localStorageKey, JSON.stringify(mhmHistory.value))
+}
+
+function toggleHistory() {
+    showHistory.value = !showHistory.value
 }
 </script>
 

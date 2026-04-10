@@ -5,20 +5,16 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Header'
-  , data() {
-    return {
-      tagline: 'an asocial (not/net)work'
-    }
-  }
-  , mounted() {
-    const randomTagline = Math.random()
-    
-    if (randomTagline < 0.1) {this.tagline = 'just post through it'}
-    else if (randomTagline < 0.2) {this.tagline = 'release your drafts, embrace the void'}
-    else if (randomTagline < 0.4) {this.tagline = 'an overwrought .plan file'}
-  }
-}
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const tagline = ref('an asocial (not/net)work')
+
+onMounted(() => {
+  const randomTagline = Math.random()
+
+  if (randomTagline < 0.1) { tagline.value = 'just post through it' }
+  else if (randomTagline < 0.2) { tagline.value = 'release your drafts, embrace the void' }
+  else if (randomTagline < 0.4) { tagline.value = 'an overwrought .plan file' }
+})
 </script>

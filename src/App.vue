@@ -5,22 +5,11 @@
   <Footer />
 </template>
 
-<script>
-// import HelloWorld from './components/HelloWorld.vue'
+<script setup>
 import Header from './components/Header.vue'
 import Mhm from './components/Post.vue'
 import FAQ from './components/FAQ.vue'
 import Footer from './components/Footer.vue'
-
-export default {
-  name: 'App',
-  components: {
-    Header
-    , Mhm
-    , FAQ
-    , Footer
-  }
-}
 </script>
 
 <style>
